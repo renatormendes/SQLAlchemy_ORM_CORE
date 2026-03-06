@@ -1,0 +1,5 @@
+# Bibliotecas principais
+sqlalchemy>=2.0.0
+
+# Driver para SQLite (já vem no Python, mas listado para documentação)
+# Se migrar para PostgreSQL futuramente, adicione: psycopg2-binary
