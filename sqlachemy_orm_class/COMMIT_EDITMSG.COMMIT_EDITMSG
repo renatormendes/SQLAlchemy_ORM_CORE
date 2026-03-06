@@ -1,0 +1,436 @@
+Estrutura Inicial do CRUD
+
+# --------------
+# Please enter the commit message for your changes. Everything below
+# this paragraph is ignored, and an empty message aborts the commit.
+# Just close the window to accept your message.
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..732dea6
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,94 @@
++# 🌍 European Cities CRUD - SQLAlchemy (ORM vs Core)
++
++Este projeto demonstra a implementação de um sistema CRUD (Create, Read, Update, Delete) utilizando Python e **SQLAlchemy 2.0**. O diferencial técnico deste repositório é a coexistência de duas abordagens de persistência no mesmo ecossistema: **ORM (Object-Relational Mapping)** e **Core (SQL Expression Language)**.
++
++## 🚀 Tecnologias Utilizadas
++*   **Python 3.x**
++*   **SQLAlchemy 2.0**: O kit de ferramentas SQL mais versátil para Python.
++*   **SQLite**: Banco de dados relacional leve e embutido.
++
++## 🏗️ Arquitetura do Projeto
++O projeto foi desenvolvido seguindo princípios de **Separação de Responsabilidades (SoC)**, dividindo a aplicação em camadas lógicas:
++
++1.  **`conexao.py`**: Configuração central da `Engine` e das sessões do banco de dados.
++
++2.  **`modelos.py`**: Definição da estrutura de dados utilizando classes ORM (`DeclarativeBase`).
++
++3.  **`tabelas.py`**: Definição da estrutura de dados utilizando objetos de tabela (Core).
++
++4.  **`crud_orm.py`**: Lógica de manipulação de dados utilizando a abstração de classes.
++
++5.  **`crud_core.py`**: Lógica de manipulação de dados utilizando comandos SQL programáticos.
++
++6.  **`main.py`**: Interface de linha de comando (CLI) interativa que permite ao usuário escolher o motor de execução.
++
++## 💡 Funcionalidades
++*   **Escolha de Motor**: O usuário pode decidir no início da execução se deseja operar via ORM ou Core.
++
++*   **Interface Interativa**: Menu amigável para cadastro, listagem e exclusão de cidades.
++
++*   **Persistência Efêmera**: Implementação de uma política de limpeza que apaga todos os registros ao encerrar o programa, garantindo um ambiente de teste sempre limpo.
++
++*   **Gestão de Contexto**: Uso rigoroso de `with Session()` e `with engine.connect()` para garantir o fechamento correto das conexões e evitar vazamentos de memória.
++
++## 🛠️ Como Executar
++1. Clone o repositório:
++   ```bash
++   git clone https://github.com
++
++### 🛠️ Instalação Rápida
++1. Recomenda-se criar um ambiente virtual:
++   ```bash
++   python -m venv venv
++   source venv/bin/activate  # Linux/Mac
++   # ou: venv\Scripts\activate  # Windows
++
++2. Instale as dependências automaticamente:
++
++   pip install -r requirements.txt
++
++### 💡 Dica de Especialista:
++
++Como você está usando o **SQLAlchemy 2.0**, você pode gerar o arquivo requirements.txt automaticamente com as versões exatas que você usou na sua máquina rodando este comando no terminal:
++
++pip freeze > requirements.txt`
++
++Isso garante que o projeto nunca "quebre" por causa de uma atualização futura da biblioteca, pois fixa a versão exata que você testou.
++
++## 🛡️ Boas Práticas e Segurança
++Neste projeto, foram aplicadas diretrizes fundamentais para o desenvolvimento de software robusto:
++*   **Prevenção de SQL Injection**: O uso do `SQLAlchemy Core` e `ORM` garante que todos os parâmetros sejam tratados de forma segura (parameterized queries), impedindo ataques de injeção de SQL.
++*   **Gerenciamento de Contexto (Context Managers)**: Utilização sistemática do `with Session()` e `with engine.connect()`, garantindo que as conexões sejam fechadas automaticamente, mesmo em caso de falhas críticas.
++*   **Segregação de Responsabilidades**: A lógica de interface (CLI) nunca acessa o banco de dados diretamente; ela depende exclusivamente da camada de serviço (`crud_*.py`), facilitando a manutenção e testes unitários.
++
++## 🚀 Próximos Passos (Roadmap)
++Para evoluir este projeto, as seguintes implementações são planejadas:
++
++1.  **Migração de Banco de Dados**: Alterar o `engine` para suportar bancos de produção como **PostgreSQL** ou **MySQL** apenas trocando a string de conexão.
++
++2.  **Validação de Dados**: Integrar a biblioteca **Pydantic** para validar os campos (ex: impedir nomes de cidades vazios) antes de chegarem à camada de persistência.
++
++3.  **Interface Web**: Evoluir o `main.py` para uma API REST utilizando **FastAPI**, aproveitando a estrutura assíncrona do SQLAlchemy 2.0.
++
++4.  **Migrations**: Implementar o **Alembic** para gerenciar versões do banco de dados de forma profissional, permitindo alterações na estrutura das tabelas sem perda de dados.
++
++
++Instale as dependências:
++
++pip install sqlalchemy
++
++Execute a aplicação:
++
++python main.py
++python main_old.py
++python main_CORE_ORM.py (Este último com a escolha de executar com CORE ou ORM)
++
++🧠 Aprendizados Relevantes
++
++   - Diferença ORM vs Core: Entendimento prático de quando usar abstrações de classes (ORM) para produtividade ou expressões SQL (Core) para performance e controle granular.
++   
++   - Modularização: Organização de arquivos para facilitar a manutenção e escalabilidade do código.
++    
++   - Tratamento de Erros: Gestão de exceções como OperationalError e ciclo de vida de tabelas no SQLite.
++
++Desenvolvido por Renato Mendes
+\ No newline at end of file
+diff --git a/__pycache__/conexao.cpython-312.pyc b/__pycache__/conexao.cpython-312.pyc
+new file mode 100644
+index 0000000..e0e86a5
+Binary files /dev/null and b/__pycache__/conexao.cpython-312.pyc differ
+diff --git a/__pycache__/crud_core.cpython-312.pyc b/__pycache__/crud_core.cpython-312.pyc
+new file mode 100644
+index 0000000..c04f481
+Binary files /dev/null and b/__pycache__/crud_core.cpython-312.pyc differ
+diff --git a/__pycache__/crud_orm.cpython-312.pyc b/__pycache__/crud_orm.cpython-312.pyc
+new file mode 100644
+index 0000000..ea33a08
+Binary files /dev/null and b/__pycache__/crud_orm.cpython-312.pyc differ
+diff --git a/__pycache__/modelos.cpython-312.pyc b/__pycache__/modelos.cpython-312.pyc
+new file mode 100644
+index 0000000..d5f9c62
+Binary files /dev/null and b/__pycache__/modelos.cpython-312.pyc differ
+diff --git a/__pycache__/tabelas.cpython-312.pyc b/__pycache__/tabelas.cpython-312.pyc
+new file mode 100644
+index 0000000..a9b4f46
+Binary files /dev/null and b/__pycache__/tabelas.cpython-312.pyc differ
+diff --git a/conexao.py b/conexao.py
+new file mode 100644
+index 0000000..ef7cc9a
+--- /dev/null
++++ b/conexao.py
+@@ -0,0 +1,27 @@
++from sqlalchemy import create_engine, Column, Integer, String
++from sqlalchemy.orm import declarative_base, sessionmaker
++from tabelas import metadata
++
++# Configuração da Engine
++engine = create_engine("sqlite:///european_database.sqlite")
++
++# ESSE COMANDO É ESSENCIAL: ele lê o metadata e cria as tabelas no arquivo .sqlite
++metadata.create_all(engine)
++
++# Base para o ORM
++Base = declarative_base()
++
++# Definição do Modelo
++class Cidade(Base):
++
++	__tablename__ = 'cidades'
++
++	id = Column(Integer, primary_key = True, autoincrement = True)
++	nome = Column(String, nullable = False)
++	pais = Column(String, nullable = False)
++
++# Cria as tabelas
++Base.metadata.create_all(engine)
++
++# Coniguração da Sessão
++Session = sessionmaker(bind = engine)
+\ No newline at end of file
+diff --git a/crud_core.py b/crud_core.py
+new file mode 100644
+index 0000000..36ad704
+--- /dev/null
++++ b/crud_core.py
+@@ -0,0 +1,23 @@
++import sqlalchemy as db
++from conexao import engine
++from tabelas import tabela_cidades
++
++def criar(nome, pais):
++
++	with engine.connect() as conn:
++
++		conn.execute(db.insert(tabela_cidades).values(nome = nome, pais = pais))
++		conn.commit()
++
++def listar():
++
++	with engine.connect() as conn:
++
++		return conn.execute(db.select(tabela_cidades)).fetchall()
++
++def deletar_tudo():
++
++	with engine.connect() as conn:
++
++		conn.execute(db.delete(tabela_cidades))
++		conn.commit()
+\ No newline at end of file
+diff --git a/crud_orm.py b/crud_orm.py
+new file mode 100644
+index 0000000..50a659d
+--- /dev/null
++++ b/crud_orm.py
+@@ -0,0 +1,23 @@
++from conexao import Session
++from modelos import Cidade
++
++def criar(nome, pais):
++
++	with Session() as s:
++
++		s.add(Cidade(nome = nome, pais = pais))
++		s.commit()
++
++def listar():
++
++	with Session() as s:
++
++		return s.query(Cidade).all()
++
++def deletar_tudo():
++
++	with Session() as s:
++
++		s.query(Cidade).delete()
++		s.commit()
++
+diff --git a/european_database.sqlite b/european_database.sqlite
+new file mode 100644
+index 0000000..124c90a
+Binary files /dev/null and b/european_database.sqlite differ
+diff --git a/img/tela 2.png b/img/tela 2.png
+new file mode 100644
+index 0000000..519efa9
+Binary files /dev/null and b/img/tela 2.png differ
+diff --git a/img/tela1.png b/img/tela1.png
+new file mode 100644
+index 0000000..e828118
+Binary files /dev/null and b/img/tela1.png differ
+diff --git a/main.py b/main.py
+new file mode 100644
+index 0000000..76207a1
+--- /dev/null
++++ b/main.py
+@@ -0,0 +1,53 @@
++import sys
++import os
++from crud_orm import criar, listar, deletar_tudo
++
++def menu():
++    while True:
++
++        print("\n" + "="*30)
++        print("🌍 GERENCIADOR DE CIDADES")
++        print("="*30)
++        print("1. Cadastrar nova cidade")
++        print("2. Listar todas as cidades")
++        print("3. Sair e Limpar Banco")
++        print("="*30)
++        
++        opcao = input("Escolha uma opção: ")
++
++        if opcao == "1":
++
++            nome = input("Digite o nome da cidade: ")
++            pais = input("Digite o país: ")
++            criar(nome, pais)
++            print(f"\n✅ {nome} adicionada com sucesso!")
++
++        elif opcao == "2":
++
++            cidades = listar()
++            print("\n--- CIDADES CADASTRADAS ---")
++
++            if not cidades:
++
++                print("Nenhum registro encontrado.")
++
++            else:
++
++                for c in cidades:
++
++                    # Se for ORM, acessamos como c.nome. Se for Core, c['nome'] ou c.nome.
++                    print(f"ID: {c.id} | Cidade: {c.nome} | País: {c.pais}")
++
++        elif opcao == "3":
++
++            print("\n🧹 Limpando dados e encerrando...")
++            deletar_tudo()
++            print("Até logo!")
++            break
++        
++        else:
++            print("\n⚠️ Opção inválida! Tente novamente.")
++
++if __name__ == "__main__":
++    
++    menu()
+diff --git a/main_Core_ORM.py b/main_Core_ORM.py
+new file mode 100644
+index 0000000..0306c3d
+--- /dev/null
++++ b/main_Core_ORM.py
+@@ -0,0 +1,51 @@
++import sys
++import crud_orm
++import crud_core
++
++def escolher_modo():
++    print("="*30)
++    print("   ESCOLHA O MODO DE OPERAÇÃO")
++    print("="*30)
++    print("1. Usar SQLAlchemy ORM (Classes)")
++    print("2. Usar SQLAlchemy CORE (Tabelas)")
++    
++    escolha = input("Selecione (1 ou 2): ")
++    return crud_orm if escolha == "1" else crud_core
++
++def menu():
++    # Define qual módulo CRUD será usado para esta sessão
++    dao = escolher_modo()
++    modo_nome = "ORM" if dao == crud_orm else "CORE"
++    
++    while True:
++        print(f"\n--- 🌍 SISTEMA ({modo_nome}) ---")
++        print("1. Cadastrar Cidade")
++        print("2. Listar Cidades")
++        print("3. Sair (e apagar tudo)")
++        
++        opcao = input("\nEscolha uma opção: ")
++
++        if opcao == "1":
++            nome = input("Nome da cidade: ")
++            pais = input("País: ")
++            dao.criar(nome, pais)
++            print(f"✅ Adicionado via {modo_nome}!")
++
++        elif opcao == "2":
++            cidades = dao.listar()
++            print(f"\n--- LISTA DE CIDADES ({modo_nome}) ---")
++            for c in cidades:
++                # O SQLAlchemy Core retorna Row, o ORM retorna Objetos. 
++                # Ambos permitem acesso via .nome e .pais
++                print(f"ID: {c.id} | Nome: {c.nome} | País: {c.pais}")
++
++        elif opcao == "3":
++            dao.deletar_tudo()
++            print(f"🧹 Banco limpo via {modo_nome}. Saindo...")
++            break
++        
++        else:
++            print("⚠️ Opção inválida!")
++
++if __name__ == "__main__":
++    menu()
+diff --git a/main_old.py b/main_old.py
+new file mode 100644
+index 0000000..444fdbf
+--- /dev/null
++++ b/main_old.py
+@@ -0,0 +1,27 @@
++# 
++# Escolha um dos dois para importar:
++# from crud_orm import criar, listar, deletar_tudo
++# from crud_core import criar, listar, deletar_tudo
++# 
++
++from crud_orm import criar, listar, deletar_tudo
++
++if __name__ == "__main__":
++
++	try:
++
++		criar("Lisboa", "Portugal")
++		criar("Rio de Janeiro", "Brasil")
++		criar("Tóquio", "Japão")
++		criar("Kremilin", "Rússia")
++
++		cidades = listar()
++
++		for c in cidades:
++
++			print(f"ID: {c.id} | Nome: {c.nome} | País: {c.pais}")
++
++	finally:
++
++		deletar_tudo()
++
+diff --git a/modelos.py b/modelos.py
+new file mode 100644
+index 0000000..6a813b5
+--- /dev/null
++++ b/modelos.py
+@@ -0,0 +1,20 @@
++from sqlalchemy.orm import declarative_base
++from sqlalchemy import Column, Integer, String
++from conexao import engine # Importe a engine aqui
++Base = declarative_base()
++
++class Cidade(Base):
++
++	__tablename__ = 'cidades_orm'
++	id = Column(
++			Integer, 
++			primary_key = True, 
++			autoincrement = True
++		)
++	nome = Column(String)
++	pais = Column(String)
++
++
++# ADICIONE ISSO: Garante que a tabela exista antes de qualquer CRUD
++Base.metadata.create_all(engine)
++
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+index 0000000..84ccfb0
+--- /dev/null
++++ b/requirements.txt
+@@ -0,0 +1,5 @@
++# Bibliotecas principais
++sqlalchemy>=2.0.0
++
++# Driver para SQLite (já vem no Python, mas listado para documentação)
++# Se migrar para PostgreSQL futuramente, adicione: psycopg2-binary
+diff --git a/tabelas.py b/tabelas.py
+new file mode 100644
+index 0000000..d511512
+--- /dev/null
++++ b/tabelas.py
+@@ -0,0 +1,11 @@
++import sqlalchemy as db
++
++metadata = db.MetaData()
++
++# Definição da tabela como objeto
++tabela_cidades = db.Table(
++	'cidades_core', metadata,
++	db.Column('id', db.Integer, primary_key = True, autoincrement = True),
++	db.Column('nome', db.String),
++	db.Column('pais', db.String)
++)
+\ No newline at end of file
